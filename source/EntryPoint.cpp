@@ -5,12 +5,23 @@
 #include "Material.h"
 #include "Mesh.h"
 
+struct Color
+{
+    float r, g, b, a;
+    Color(){}
+    Color(float f) : r(f), g(f), b(f), a(f) {}
+    Color(float r_, float g_, float b_, float a_)
+        : r(r_), g(g_), b(b_), a(a_)
+    {}
+    Color(Color const& c) : r(c.r), g(c.g), b(c.b), a(c.a) {}
+};
+
 struct PCVertex
 {
 	float		x, y, z;
-	D3DXCOLOR	color;
+	Color       color;
 
-	PCVertex(const float _x, const float _y, const float _z, const D3DXCOLOR _c) { x = _x; y = _y; z = _z; color = _c; }
+	PCVertex(const float _x, const float _y, const float _z, Color const& _c) { color = _c; }
 	DECL_LAYOUT(2)
 	{
 		"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0
@@ -61,7 +72,7 @@ public:
 		_compute->set_const("THREAD_Y", 1);
 		_compute->set_const("THREAD_Z", 1);
 
-		if (_compute->load(Shader::COMPUTE, "compute_shader.shader", "entry_point"))
+		if (_compute->load(Shader::COMPUTE, "compute_shader.hlsl", "entry_point"))
 		{
 			_data_input = new Mesh<CSData>(BaseMesh::COMPUTE_DATA, false);
 			_data_input->load((CSData*)values, n);
@@ -236,13 +247,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 
 	// Load shaders
 	Material* material = new Material; 
-	material->_vs = new Shader; material->_vs->load(Shader::VERTEX, "simple_shader.shader", "VShader");
-	material->_ps = new Shader; material->_ps->load(Shader::PIXEL, "simple_shader.shader", "PShader");
+	material->_vs = new Shader; material->_vs->load(Shader::VERTEX, "simple_shader.hlsl", "VShader");
+	material->_ps = new Shader; material->_ps->load(Shader::PIXEL, "simple_shader.hlsl", "PShader");
 
 	Mesh<PCVertex>*	mesh = new Mesh < PCVertex >(BaseMesh::NORMAL, false);
-	mesh->add(PCVertex(0.0f, 0.5f, 0.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
-	mesh->add(PCVertex(0.45f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
-	mesh->add(PCVertex(-0.45f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)));
+	mesh->add(PCVertex(0.0f, 0.5f, 0.0f, Color(1.0f, 0.0f, 0.0f, 1.0f)));
+	mesh->add(PCVertex(0.45f, -0.5f, 0.0f, Color(0.0f, 1.0f, 0.0f, 1.0f)));
+	mesh->add(PCVertex(-0.45f, -0.5f, 0.0f, Color(0.0f, 0.0f, 1.0f, 1.0f)));
 
 	srand(0);
 

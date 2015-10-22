@@ -2,6 +2,9 @@
 #include "Material.h"
 #include "Gfx.h"
 
+#include <AtlBase.h> // conversion to LPCWSTR
+#include <AtlConv.h>
+
 Shader::Shader()
 {
 	_shader._vs = NULL;
@@ -60,8 +63,21 @@ bool Shader::load(const ShaderType type,const std::string& filename, const std::
 	}
 
 	UINT compile_flags = (type==COMPUTE)?(D3DCOMPILE_IEEE_STRICTNESS):(0);
-
-	if (D3DX11CompileFromFile(filename.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, NULL, &_shader_raw, &err_msg, NULL) != S_OK)
+    //D3DX11CompileFromFile(filename.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, NULL, &_shader_raw, &err_msg, NULL)
+    std::wstring wf(filename.begin(), filename.end());
+    HRESULT HR = D3DCompileFromFile
+                 (
+                    wf.c_str(), //in_opt   LPCSTR pSourceName,
+                    macros, //const D3D_SHADER_MACRO *pDefines,
+                    D3D_COMPILE_STANDARD_FILE_INCLUDE, // in_opt   ID3DInclude *pInclude,
+                    entrypoint.c_str(), //in       LPCSTR pEntrypoint,
+                    t,//in       LPCSTR pTarget,
+                    compile_flags,//in       UINT Flags1,
+                    0, //in       UINT Flags2,
+                    &_shader_raw, //out      ID3DBlob **ppCode,
+                    &err_msg //out_opt  ID3DBlob **ppErrorMsgs
+                );
+	if(HR != S_OK)
 	{
 		if (err_msg)
 		{
@@ -143,8 +159,7 @@ void Shader::run(const int tx, const int ty, const int tz,Material* material)
 void Shader::parse_constants()
 {
 	ID3D11ShaderReflection* reflection = NULL;
-	D3D11Reflect(_shader_raw->GetBufferPointer(), _shader_raw->GetBufferSize(), &reflection);
-
+	D3DReflect(_shader_raw->GetBufferPointer(), _shader_raw->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflection);
 	if (reflection)
 	{
 		D3D11_SHADER_DESC desc;

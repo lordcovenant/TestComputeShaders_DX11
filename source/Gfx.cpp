@@ -96,7 +96,8 @@ bool Gfx::init(Window* window)
 
 void Gfx::clear(const float r, const float g, const float b, const float a)
 {
-	_context->ClearRenderTargetView(_current_target, D3DXCOLOR(r, g, b, a));
+    float color[4] = {r, g, b, a};
+	_context->ClearRenderTargetView(_current_target, &color[0]);
 }
 
 void Gfx::swap_buffers()
