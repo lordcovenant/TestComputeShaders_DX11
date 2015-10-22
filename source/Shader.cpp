@@ -65,8 +65,8 @@ bool Shader::load(const ShaderType type, const std::wstring& filename, const std
 	{
 		if (err_msg)
 		{
-			OutputDebugString((wchar_t*)err_msg->GetBufferPointer());
-			OutputDebugString(L"\n");
+			char* err = (char*)err_msg->GetBufferPointer();
+			OutputDebugString(string_format(L"%hs\n",err).c_str());
 			
 			err_msg->Release();
 		}
@@ -112,7 +112,11 @@ void Shader::set_const(const char* name, const int val)
 {
 	D3D10_SHADER_MACRO	m;
 	m.Name = _strdup(name);
-	m.Definition = _strdup(string_format_mb("%i", val).c_str());
+
+	char buffer[512];
+	sprintf_s((char*)&buffer, 512,"%i", val);
+
+	m.Definition = _strdup(buffer);
 
 	_defines.push_back(m);
 }

@@ -40,18 +40,6 @@ inline std::wstring string_format(const wchar_t* fmt, ...)
 	return buffer;
 }
 
-inline std::string string_format_mb(const char* fmt, ...)
-{
-	char		buffer[8192];
-	va_list		argptr;
-
-	va_start(argptr, fmt);
-	sprintf_s(buffer, 8192, fmt, argptr);
-	va_end(argptr);
-
-	return buffer;
-}
-
 class TimerHelper
 {
 public:
