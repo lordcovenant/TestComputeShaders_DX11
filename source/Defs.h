@@ -3,10 +3,11 @@
 
 #include <dxgi.h>
 #include <d3d11.h>
-#include <D3DCompiler.h>
+#include <D3DCompiler.inl>
 
 #include <windows.h>
 #include <stdint.h>
+#include <wchar.h>
 #include <string>
 #include <vector>
 #include <map>
@@ -17,13 +18,23 @@
 #pragma comment (lib, "dxguid.lib")
 #pragma comment (lib, "winmm.lib")
 
-inline std::string string_format(const char* fmt, ...)
+
+struct Color
 {
-	char        buffer[8192];
+	Color() { ; }
+	Color(const float _r, const float _g, const float _b, const float _a) { r = _r; g = _g; b = _b; a = _a; }
+	operator FLOAT * () { return &r; }
+	operator CONST FLOAT * () const { return (const float*)&r; }
+	float r, g, b, a;
+};
+
+inline std::wstring string_format(const wchar_t* fmt, ...)
+{
+	wchar_t      buffer[8192];
 	va_list		argptr;
 
 	va_start(argptr, fmt);
-	vsprintf_s(buffer, 8192, fmt, argptr);
+	vswprintf_s(buffer, 8192, fmt, argptr);
 	va_end(argptr);
 
 	return buffer;

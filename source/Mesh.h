@@ -204,7 +204,7 @@ void Mesh<T>::get(T* output,const size_t elems)
 	D3D11_MAPPED_SUBRESOURCE ms;
 	if (GFX->_context->Map(temp_vb, NULL, D3D11_MAP_READ, NULL, &ms) == S_OK)
 	{
-		//	memcpy(output, ms.pData, sizeof(T)*_n_vertex);				// copy the data
+		memcpy(output, ms.pData, sizeof(T)*_n_vertex);				// copy the data
 		GFX->_context->Unmap(temp_vb, NULL);						// unmap the buffer
 	}
 	

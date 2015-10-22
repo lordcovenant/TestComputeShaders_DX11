@@ -2,9 +2,6 @@
 #include "Material.h"
 #include "Gfx.h"
 
-#include <AtlBase.h> // conversion to LPCWSTR
-#include <AtlConv.h>
-
 Shader::Shader()
 {
 	_shader._vs = NULL;
@@ -32,7 +29,7 @@ Shader::~Shader()
 	_defines.clear();
 }
 
-bool Shader::load(const ShaderType type,const std::string& filename, const std::string& entrypoint)
+bool Shader::load(const ShaderType type, const std::wstring& filename, const std::string& entrypoint)
 {
 	const char*		t;
 	switch (type)
@@ -63,26 +60,14 @@ bool Shader::load(const ShaderType type,const std::string& filename, const std::
 	}
 
 	UINT compile_flags = (type==COMPUTE)?(D3DCOMPILE_IEEE_STRICTNESS):(0);
-    //D3DX11CompileFromFile(filename.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, NULL, &_shader_raw, &err_msg, NULL)
-    std::wstring wf(filename.begin(), filename.end());
-    HRESULT HR = D3DCompileFromFile
-                 (
-                    wf.c_str(), //in_opt   LPCSTR pSourceName,
-                    macros, //const D3D_SHADER_MACRO *pDefines,
-                    D3D_COMPILE_STANDARD_FILE_INCLUDE, // in_opt   ID3DInclude *pInclude,
-                    entrypoint.c_str(), //in       LPCSTR pEntrypoint,
-                    t,//in       LPCSTR pTarget,
-                    compile_flags,//in       UINT Flags1,
-                    0, //in       UINT Flags2,
-                    &_shader_raw, //out      ID3DBlob **ppCode,
-                    &err_msg //out_opt  ID3DBlob **ppErrorMsgs
-                );
-	if(HR != S_OK)
+
+    std::wstring wfn(filename.begin(), filename.end());
+	if (D3DCompileFromFile(wfn.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, &_shader_raw, &err_msg) != S_OK)
 	{
 		if (err_msg)
 		{
-			OutputDebugString((char*)err_msg->GetBufferPointer());
-			OutputDebugString("\n");
+			char* err = (char*)err_msg->GetBufferPointer();
+			OutputDebugString(string_format(L"%hs\n",err).c_str());
 			
 			err_msg->Release();
 		}
@@ -128,7 +113,11 @@ void Shader::set_const(const char* name, const int val)
 {
 	D3D10_SHADER_MACRO	m;
 	m.Name = _strdup(name);
-	m.Definition = _strdup(string_format("%i", val).c_str());
+
+	char buffer[512];
+	sprintf_s((char*)&buffer, 512,"%i", val);
+
+	m.Definition = _strdup(buffer);
 
 	_defines.push_back(m);
 }
@@ -160,6 +149,7 @@ void Shader::parse_constants()
 {
 	ID3D11ShaderReflection* reflection = NULL;
 	D3DReflect(_shader_raw->GetBufferPointer(), _shader_raw->GetBufferSize(), IID_ID3D11ShaderReflection, (void**)&reflection);
+
 	if (reflection)
 	{
 		D3D11_SHADER_DESC desc;
