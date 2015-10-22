@@ -20,7 +20,7 @@ Window::Window()
 	_width=_height = 0;
 }
 
-Window::Window(const std::string& title, const int width, const int height)
+Window::Window(const std::wstring& title, const int width, const int height)
 {
 	init(title,width,height);
 }
@@ -35,7 +35,7 @@ Window::~Window()
 	}
 }
 
-bool Window::init(const std::string& title, const int width, const int height)
+bool Window::init(const std::wstring& title, const int width, const int height)
 {
 	WNDCLASSEX wc;
 
@@ -49,13 +49,13 @@ bool Window::init(const std::string& title, const int width, const int height)
 	wc.hInstance = GetModuleHandle(NULL);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 //	wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-	wc.lpszClassName = "MainWindow";
+	wc.lpszClassName = L"MainWindow";
 
 	// register the window class
 	RegisterClassEx(&wc);
 
 	// create the window and use the result as the handle
-	_window = CreateWindowEx(NULL,"MainWindow",    // name of the window class
+	_window = CreateWindowEx(NULL,L"MainWindow",    // name of the window class
 		title.c_str(),   // title of the window
 		WS_OVERLAPPEDWINDOW,    // window style
 		0,    // x-position of the window
@@ -116,7 +116,7 @@ bool Window::do_message_pump()
 /*	if (n_msg > 0)
 	{
 		char buffer[512];
-		sprintf_s((char*)&buffer, 512, "Msg=%i\n", n_msg);
+		swprintf_s((wchar_t*)&buffer, 512, L"Msg=%i\n", n_msg);
 
 		OutputDebugString(buffer);
 	}				*/

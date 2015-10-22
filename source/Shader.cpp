@@ -29,7 +29,7 @@ Shader::~Shader()
 	_defines.clear();
 }
 
-bool Shader::load(const ShaderType type,const std::string& filename, const std::string& entrypoint)
+bool Shader::load(const ShaderType type, const std::wstring& filename, const std::string& entrypoint)
 {
 	const char*		t;
 	switch (type)
@@ -61,12 +61,12 @@ bool Shader::load(const ShaderType type,const std::string& filename, const std::
 
 	UINT compile_flags = (type==COMPUTE)?(D3DCOMPILE_IEEE_STRICTNESS):(0);
 
-	if (D3DX11CompileFromFile(filename.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, NULL, &_shader_raw, &err_msg, NULL) != S_OK)
+	if (D3DCompileFromFile(filename.c_str(), macros, NULL, entrypoint.c_str(), t, compile_flags, NULL, &_shader_raw, &err_msg) != S_OK)
 	{
 		if (err_msg)
 		{
-			OutputDebugString((char*)err_msg->GetBufferPointer());
-			OutputDebugString("\n");
+			OutputDebugString((wchar_t*)err_msg->GetBufferPointer());
+			OutputDebugString(L"\n");
 			
 			err_msg->Release();
 		}
@@ -112,7 +112,7 @@ void Shader::set_const(const char* name, const int val)
 {
 	D3D10_SHADER_MACRO	m;
 	m.Name = _strdup(name);
-	m.Definition = _strdup(string_format("%i", val).c_str());
+	m.Definition = _strdup(string_format_mb("%i", val).c_str());
 
 	_defines.push_back(m);
 }

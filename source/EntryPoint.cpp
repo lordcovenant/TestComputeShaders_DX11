@@ -8,9 +8,9 @@
 struct PCVertex
 {
 	float		x, y, z;
-	D3DXCOLOR	color;
+	Color		color;
 
-	PCVertex(const float _x, const float _y, const float _z, const D3DXCOLOR _c) { x = _x; y = _y; z = _z; color = _c; }
+	PCVertex(const float _x, const float _y, const float _z, const Color _c) { x = _x; y = _y; z = _z; color = _c; }
 	DECL_LAYOUT(2)
 	{
 		"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0
@@ -61,7 +61,7 @@ public:
 		_compute->set_const("THREAD_Y", 1);
 		_compute->set_const("THREAD_Z", 1);
 
-		if (_compute->load(Shader::COMPUTE, "compute_shader.shader", "entry_point"))
+		if (_compute->load(Shader::COMPUTE, L"compute_shader.shader", "entry_point"))
 		{
 			_data_input = new Mesh<CSData>(BaseMesh::COMPUTE_DATA, false);
 			_data_input->load((CSData*)values, n);
@@ -225,7 +225,7 @@ float sum_array_gpu(float* values, int n, float& inner_loop, float& fetch_time)
 */
 int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,int nCmdShow)
 {
-	Window* window = new Window("Test",1600,900);
+	Window* window = new Window(L"Test",1600,900);
 	
 	new Gfx;
 
@@ -236,13 +236,13 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 
 	// Load shaders
 	Material* material = new Material; 
-	material->_vs = new Shader; material->_vs->load(Shader::VERTEX, "simple_shader.shader", "VShader");
-	material->_ps = new Shader; material->_ps->load(Shader::PIXEL, "simple_shader.shader", "PShader");
+	material->_vs = new Shader; material->_vs->load(Shader::VERTEX, L"simple_shader.shader", "VShader");
+	material->_ps = new Shader; material->_ps->load(Shader::PIXEL, L"simple_shader.shader", "PShader");
 
 	Mesh<PCVertex>*	mesh = new Mesh < PCVertex >(BaseMesh::NORMAL, false);
-	mesh->add(PCVertex(0.0f, 0.5f, 0.0f, D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f)));
-	mesh->add(PCVertex(0.45f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f)));
-	mesh->add(PCVertex(-0.45f, -0.5f, 0.0f, D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f)));
+	mesh->add(PCVertex(0.0f, 0.5f, 0.0f, Color(1.0f, 0.0f, 0.0f, 1.0f)));
+	mesh->add(PCVertex(0.45f, -0.5f, 0.0f, Color(0.0f, 1.0f, 0.0f, 1.0f)));
+	mesh->add(PCVertex(-0.45f, -0.5f, 0.0f, Color(0.0f, 0.0f, 1.0f, 1.0f)));
 
 	srand(0);
 
@@ -254,11 +254,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 	}
 
 /*	float	t0, t1, inner_loop_time, fetch_time;
-	char	buffer[512];
+	wchar_t	buffer[512];
 	t0 = TIMER.get();
 	float	val = sum_array_cpu(values, N_ELEMS);
 	t1 = TIMER.get();
-	sprintf_s((char*)&buffer, 512, "Value CPU=%f || Time=%f ms || Elems=%u\n",val,t1-t0,N_ELEMS);
+	swprintf_s((wchar_t*)&buffer, 512, L"Value CPU=%f || Time=%f ms || Elems=%u\n",val,t1-t0,N_ELEMS);
 	OutputDebugString("------------------------------------------------------------------------------------\n");
 	OutputDebugString(buffer);
 	OutputDebugString("------------------------------------------------------------------------------------\n");
@@ -269,7 +269,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 /*	t0 = TIMER.get();
 	val = sum_array_gpu(&s,values, N_ELEMS, inner_loop_time, fetch_time);
 	t1 = TIMER.get();
-	sprintf_s((char*)&buffer, 512, "Value GPU=%f || Time=%f ms (%f ms / fetch_time=%f ms)|| Elems=%u\n", val, t1 - t0, inner_loop_time, fetch_time, N_ELEMS);
+	swprintf_s((wchar_t*)&buffer, 512, L"Value GPU=%f || Time=%f ms (%f ms / fetch_time=%f ms)|| Elems=%u\n", val, t1 - t0, inner_loop_time, fetch_time, N_ELEMS);
 	OutputDebugString("------------------------------------------------------------------------------------\n");
 	OutputDebugString(buffer);
 	OutputDebugString("------------------------------------------------------------------------------------\n");
@@ -330,19 +330,19 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 	fetch_sum_time = TIMER.get() - fetch_sum_time;
 
 	OutputDebugString("------------------------------------------------------------------------------------\n");
-	sprintf_s((char*)&buffer, 512, "Setup time=%f ms (%f/instance)\n", setup_time, setup_time / (float)N_TEST);
+	swprintf_s((wchar_t*)&buffer, 512, L"Setup time=%f ms (%f/instance)\n", setup_time, setup_time / (float)N_TEST);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "Clear time=%f ms\n", clear_time);
+	swprintf_s((wchar_t*)&buffer, 512, L"Clear time=%f ms\n", clear_time);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "Time until first is ready=%f ms\n", first_one_ready);
+	swprintf_s((wchar_t*)&buffer, 512, L"Time until first is ready=%f ms\n", first_one_ready);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "Time until last is ready=%f ms\n", last_one_ready);
+	swprintf_s((wchar_t*)&buffer, 512, L"Time until last is ready=%f ms\n", last_one_ready);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "First I got ready=%i\n", first_one);
+	swprintf_s((wchar_t*)&buffer, 512, L"First I got ready=%i\n", first_one);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "Avg. Fetch Time=%f ms\n", fetch_sum_time / (float)N_TEST);
+	swprintf_s((wchar_t*)&buffer, 512, L"Avg. Fetch Time=%f ms\n", fetch_sum_time / (float)N_TEST);
 	OutputDebugString(buffer);
-	sprintf_s((char*)&buffer, 512, "Avg. Inner Loop Time=%f ms\n", inner_loop_time_sum_time / (float)N_TEST);
+	swprintf_s((wchar_t*)&buffer, 512, L"Avg. Inner Loop Time=%f ms\n", inner_loop_time_sum_time / (float)N_TEST);
 	OutputDebugString(buffer);
 	OutputDebugString("------------------------------------------------------------------------------------\n");
 	*/
@@ -350,7 +350,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 	Mesh<CSData>*	prev_frame = NULL;
 	float			inner_loop_time;
 	float			fetch_time;
-	char			buffer[512];
+	wchar_t			buffer[512];
 
 	while (Window::do_message_pump())
 	{
@@ -365,7 +365,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 			}
 			first_one_ready = TIMER.get() - first_one_ready;
 
-			sprintf_s((char*)&buffer, 512, "Value GPU=%f (%f ms)\r", tmp_val.val, first_one_ready);
+			swprintf_s((wchar_t*)&buffer, 512, L"Value GPU=%f (%f ms)\r", tmp_val.val, first_one_ready);
 //			OutputDebugString("------------------------------------------------------------------------------------\n");
 			OutputDebugString(buffer);
 //			OutputDebugString("------------------------------------------------------------------------------------\n");
@@ -377,7 +377,7 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 		float t = TIMER.get();
 		float val=sum_array_gpu(&s, inner_loop_time, fetch_time);
 		t = TIMER.get() - t;
-		sprintf_s((char*)&buffer, 512, "Value GPU=%f (%f ms)\r", val, t);
+		swprintf_s((wchar_t*)&buffer, 512, L"Value GPU=%f (%f ms)\r", val, t);
 		OutputDebugString(buffer);
 
 		GFX->clear((float)(rand() % 255) / 255.0f, (float)(rand() % 255) / 255.0f, (float)(rand() % 255) / 255.0f, 1.0f);

@@ -6,10 +6,10 @@ class Window
 {
 public:
 	Window();
-	Window(const std::string& title, const int width, const int height);
+	Window(const std::wstring& title, const int width, const int height);
 	virtual ~Window();
 
-			bool		init(const std::string& title,const int width,const int height);
+			bool		init(const std::wstring& title, const int width, const int height);
 			LRESULT		handle_message(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	inline	int			get_width() { return _width; }

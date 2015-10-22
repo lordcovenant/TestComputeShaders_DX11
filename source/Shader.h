@@ -12,11 +12,11 @@ public:
 	typedef enum { DATA_SCALAR, DATA_TEXTURE, DATA_ARRAY_R, DATA_ARRAY_RW } DataType;
 	struct ShaderConstant
 	{
-		uint16_t	_index;
-		std::string	_name;
-		BindType	_bind_type;
-		DataType	_type;
-		size_t		_size;
+		uint16_t		_index;
+		std::string		_name;
+		BindType		_bind_type;
+		DataType		_type;
+		size_t			_size;
 	};
 	typedef std::vector<ShaderConstant>	ShaderConstants;
 protected:
@@ -25,7 +25,7 @@ public:
 	Shader();
 	virtual ~Shader();
 
-	bool load(const ShaderType type, const std::string& filename, const std::string& entrypoint);
+	bool load(const ShaderType type, const std::wstring& filename, const std::string& entrypoint);
 	void set(Material* material = NULL);
 	void set_const(const char* name, const int val);
 	void run(const int tx, const int ty, const int tz,Material* material=NULL);

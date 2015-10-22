@@ -23,7 +23,7 @@ public:
 
 	void	set();
 	void	set_constants(const Shader::ShaderType shader_type, Shader::ShaderConstants* c);
-	void	add_var(const std::string& var_name,BaseMesh* mesh,const bool is_rw);
+	void	add_var(const std::string& var_name, BaseMesh* mesh, const bool is_rw);
 
 public:
 	Shader*			_vs;
