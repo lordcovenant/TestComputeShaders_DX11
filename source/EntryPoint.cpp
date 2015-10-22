@@ -389,7 +389,11 @@ int WINAPI WinMain(HINSTANCE hInstance,HINSTANCE hPrevInstance,LPSTR lpCmdLine,i
 		float val=sum_array_gpu(&s, inner_loop_time, fetch_time);
 		t = TIMER.get() - t;
 		sprintf_s((char*)&buffer, 512, "Value GPU=%f (%f ms)\r", val, t);
+#ifdef _DEBUG
 		OutputDebugString(buffer);
+#else
+        printf("%s\n", buffer);
+#endif
 
 		GFX->clear((float)(rand() % 255) / 255.0f, (float)(rand() % 255) / 255.0f, (float)(rand() % 255) / 255.0f, 1.0f);
 		mesh->draw(material);

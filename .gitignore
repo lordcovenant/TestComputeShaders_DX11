@@ -4,9 +4,13 @@
 *.suo
 *.ilk
 *.pdb
+*.ipdb
+*.obj
+*.iobj
 
 # ignore binaries
 release/*.exe
+release/*.ipdb
 project/x64
 project/Win32
 

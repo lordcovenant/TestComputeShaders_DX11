@@ -87,7 +87,6 @@
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)64</TargetName>
     <OutDir>..\release\</OutDir>
-    <IntDir>D:\Projects\_Intermediate\%(ProjectName)\$(Configuration)\$(Platform)\</IntDir>
     <IncludePath>$(IncludePath);d:\sdk\directx\include</IncludePath>
     <LibraryPath>d:\sdk\directx\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
