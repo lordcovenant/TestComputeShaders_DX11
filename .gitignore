@@ -13,4 +13,4 @@ release/*.exe
 release/*.ipdb
 project/x64
 project/Win32
-
+release/D3DCompiler_47.dll
